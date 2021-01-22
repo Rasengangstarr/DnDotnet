@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "te57dqn+mU5xdAs33AYKFrTNttwTg9wzjSXbthG6br72g6E1/QRr/vCdU+yNveagwhWLhQBKU2g46pl1Nn68Uw==",
+  "success": true,
+  "projectFilePath": "/home/david/Documents/DnDotnet/DnDotnet.fsproj",
+  "expectedPackageFiles": [
+    "/home/david/.nuget/packages/fsharp.core/5.0.0/fsharp.core.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
