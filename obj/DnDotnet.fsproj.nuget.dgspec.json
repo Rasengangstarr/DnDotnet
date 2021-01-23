@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/david/Documents/DnDotnet/DnDotnet.fsproj": {}
+    "/home/david/Documents/DnDotnet/DnDotnet/DnDotnet.fsproj": {}
   },
   "projects": {
-    "/home/david/Documents/DnDotnet/DnDotnet.fsproj": {
+    "/home/david/Documents/DnDotnet/DnDotnet/DnDotnet.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/david/Documents/DnDotnet/DnDotnet.fsproj",
+        "projectUniqueName": "/home/david/Documents/DnDotnet/DnDotnet/DnDotnet.fsproj",
         "projectName": "DnDotnet",
-        "projectPath": "/home/david/Documents/DnDotnet/DnDotnet.fsproj",
+        "projectPath": "/home/david/Documents/DnDotnet/DnDotnet/DnDotnet.fsproj",
         "packagesPath": "/home/david/.nuget/packages/",
-        "outputPath": "/home/david/Documents/DnDotnet/obj/",
+        "outputPath": "/home/david/Documents/DnDotnet/DnDotnet/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/david/.nuget/NuGet/NuGet.Config"
