@@ -124,6 +124,19 @@ let objrandom = new Random()
 
 let max (x,y) = if x > y then x else y
 
+let StatToMod x = float ((x - 10) / 2) |> floor |> int
+
+let ChalToProf(x : float) =
+    if x <= 4.0 then 2 else
+    if x <= 8.0 then 3 else
+    if x <= 12.0 then 4 else
+    if x <= 16.0 then 5 else
+    if x <= 20.0 then 6 else
+    if x <= 24.0 then 7 else
+    if x <= 28.0 then 8 else
+    if x <= 30.0 then 9 else
+    0
+
 type Details = 
     { Name : string
       Description : string }
@@ -140,8 +153,15 @@ type Dice =
         Sides : int
     }
 
+type WeaponProperties =
+    {
+        Finesse : bool
+        Ranged  : bool
+    }
+
 type Item = 
-    | Weapon of Details * Dice
+    | Weapon of Details * Dice * properties: WeaponProperties
+    | Armor of Details * int
 
 type Creature = 
     {
@@ -154,6 +174,8 @@ type Creature =
         Cha : int
         Items : Item list
         RightHand : Item
+        Armor   : Item
+        Level : float
     }
 
 let Equip item creature =
@@ -162,16 +184,29 @@ let Equip item creature =
 let Give item creature =
     {creature with Items = List.append creature.Items [item]}
 
-let ToHit creature =
+let CalcToHit creature =
+    match creature.RightHand with
+    | Weapon(properties = p) ->
+        if p.Finesse then max(StatToMod creature.Str, StatToMod creature.Dex) + ChalToProf creature.Level else
+        if p.Ranged then StatToMod creature.Dex + ChalToProf creature.Level else
+        StatToMod creature.Str + ChalToProf creature.Level
 
+let CalcAC creature =
+    match
+
+let leatherArmor : Item =
+    Armor ({ Name = "Leather Armor"; Description = "Stylish Leather Armor"; },
+           13)
 
 let scimitar : Item =
     Weapon ({ Name = "Scimitar"; Description = "A Scimitar"; },
-        { Sides = 6; })
+            { Sides = 6; },
+            { Finesse = true; Ranged = false; })
 
 let emptyHand : Item =
     Weapon ({ Name = "Empty Hand"; Description = "Bare fists"; },
-        { Sides = 1; })
+            { Sides = 1; },
+            { Finesse = false; Ranged = false; })
 
 let mutable goblin =
     {
@@ -179,6 +214,7 @@ let mutable goblin =
         Str=8; Dex=14; Con=10; Int=10; Wis=10; Cha=9;
         Items = []
         RightHand = emptyHand;
+        Level = 0.25;
     }
 
 [<EntryPoint>]
