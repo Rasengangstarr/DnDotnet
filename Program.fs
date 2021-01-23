@@ -192,7 +192,8 @@ let CalcToHit creature =
         StatToMod creature.Str + ChalToProf creature.Level
 
 let CalcAC creature =
-    match
+    match creature.Armor with
+    | Armor()
 
 let leatherArmor : Item =
     Armor ({ Name = "Leather Armor"; Description = "Stylish Leather Armor"; },
