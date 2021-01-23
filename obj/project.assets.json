@@ -89,19 +89,19 @@
     ]
   },
   "packageFolders": {
-    "/home/dave/.nuget/packages/": {}
+    "/home/david/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/dave/Documents/DnDotnet/DnDotnet.fsproj",
+      "projectUniqueName": "/home/david/Documents/DnDotnet/DnDotnet/DnDotnet.fsproj",
       "projectName": "DnDotnet",
-      "projectPath": "/home/dave/Documents/DnDotnet/DnDotnet.fsproj",
-      "packagesPath": "/home/dave/.nuget/packages/",
-      "outputPath": "/home/dave/Documents/DnDotnet/obj/",
+      "projectPath": "/home/david/Documents/DnDotnet/DnDotnet/DnDotnet.fsproj",
+      "packagesPath": "/home/david/.nuget/packages/",
+      "outputPath": "/home/david/Documents/DnDotnet/DnDotnet/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/dave/.nuget/NuGet/NuGet.Config"
+        "/home/david/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"

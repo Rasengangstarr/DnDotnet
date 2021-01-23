@@ -1,126 +1,12 @@
-// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
-
 open System
 
-// let challengeRatings =
-//     [4,2; 8,3; 12,4; 16,5; 20,6; 24,7; 28,8; 30,9;]
+let mutable combatLog : string list = []
 
-// let ChalToProf(x : float) =
-//     if x <= 4.0 then 2 else
-//     if x <= 8.0 then 3 else
-//     if x <= 12.0 then 4 else
-//     if x <= 16.0 then 5 else
-//     if x <= 20.0 then 6 else
-//     if x <= 24.0 then 7 else
-//     if x <= 28.0 then 8 else
-//     if x <= 30.0 then 9 else
-//     0
-
-// type WeaponTypes = Str | Dex | Fin
+let log x =
+    combatLog <- List.append combatLog [x]
+    0
 
 let objrandom = new Random()
-
-// // Define a function to construct a message to print
-// let from whom =
-//     sprintf "from %s" whom
-
-// let roll dice =
-//     objrandom.Next(1,dice)
-
-// let RollWithMod dice x =
-//     roll dice + x
-
-
-
-// let Damage dd dm h  =
-//     if h then RollWithMod dd dm else 0
-
-// type Armor(ac) =
-//     member this.AC = ac
-
-// type Weapon(damageDice, damageMod, wt : WeaponTypes, name) =
-//     member this.DamageDice : int = damageDice
-//     member this.DamageMod : int = damageMod
-//     member this.Name : string = name
-
-
-
-// type StatVect =
-//     struct
-//         val Str : int
-//         val Dex : int
-//         val Con : int
-//         val Int : int
-//         val Wis : int
-//         val Cha : int
-
-//         new (str, dex, con, int, wis, cha) =
-//             {Str = str; Dex = dex; Con = con; Int = int; Wis = wis; Cha = cha}
-
-// end
-
-// let StatToMod x =
-//     float ((x - 10) / 2) |> floor |> int
-
-// let ToHit (f : WeaponTypes, s : StatVect, p : int) =
-//     match f with
-//     | Str -> s.Str + p
-//     | Dex -> s.Dex + p
-//     | Fin -> max(s.Str,s.Dex) + p
-//     | _   -> 0
-
-// let Mt0 x =
-//     x > 0
-
-// type Character(stats : StatVect, name, description, armor: Armor, weapon: Weapon, cr) =
-//     member this.Stats = stats
-//     member this.Name = name
-//     member this.Description = description
-//     member this.Armor = armor
-//     member this.CR : float = cr
-//     member this.Weapon : Weapon = weapon
-
-//     member private this.StatToMod(x) =
-//         let xf = float ((x - 10) / 2)
-//         let xfl = floor xf
-//         int xfl
-    
-//     member this.StrMod = this.StatToMod this.Stats.Str
-//     member this.DexMod = this.StatToMod this.Stats.Dex
-//     member this.ConMod = this.StatToMod this.Stats.Con
-//     member this.IntMod = this.StatToMod this.Stats.Int
-//     member this.WisMod = this.StatToMod this.Stats.Wis
-//     member this.ChaMod = this.StatToMod this.Stats.Cha
-
-//     // member this.Attack(target : Character) =
-         
-//     //     let weapon = this.Weapon
-//     //     let isFinesse = weapon.IsFinesse
-//     //     printf "the %s is attacking the %s with a %s \n" this.Name target.Name this.Weapon.Name
-        
-
-//     //     printf "the %s get plus %i to hit (%i from stats, %i from challenge level) \n" this.Name toHit (max(this.StrMod, this.DexMod)) (ChalToProf this.CR)
-
-
-// type Stat =    
-//     | Str of int
-//     | Dex of int
-//     | Con of int
-//     | Int of int
-//     | Wis of int
-//     | Cha of int
-
-
-// type Stats =
-//     {
-//         Str : Stat.Str
-//         Dex : Stat.Dex
-//         Con : Stat.Con
-//         Int : Stat.Int
-//         Wis : Stat.Wis
-//         Cha : Stat.Cha
-//     }
-
 
 let max (x,y) = if x > y then x else y
 
@@ -137,6 +23,8 @@ let ChalToProf(x : float) =
     if x <= 30.0 then 9 else
     0
 
+//#region types
+
 type Details = 
     { Name : string
       Description : string }
@@ -145,7 +33,10 @@ type Details =
 let Finesse x y = max(x,y)
 
 let roll dice =
-    objrandom.Next(1,dice)
+    let result = objrandom.Next(1,dice)
+    log (sprintf "rolled %i on a d%i" result dice) |> ignore
+    result
+    
 
 
 type Dice =
@@ -159,9 +50,14 @@ type WeaponProperties =
         Ranged  : bool
     }
 
+type ArmorClass =
+    | Light = 0
+    | Medium = 1
+    | Heavy = 2
+
 type Item = 
-    | Weapon of Details * Dice * properties: WeaponProperties
-    | Armor of Details * int
+    | Weapon of details:Details * dice: int * properties: WeaponProperties
+    | Armor of details:Details * modifier: int * armorClass: ArmorClass
 
 type Creature = 
     {
@@ -176,52 +72,145 @@ type Creature =
         RightHand : Item
         Armor   : Item
         Level : float
+        Hitpoints : int
     }
 
-let Equip item creature =
-    if List.contains item creature.Items then {creature with RightHand = item} else creature
+//#endregion
+
+let EquipInRightHand item creature =
+    if List.contains item creature.Items then {creature with RightHand = item} else creature 
+
+let EquipInArmor item creature =
+    if List.contains item creature.Items then {creature with Armor = item} else creature
+
 
 let Give item creature =
     {creature with Items = List.append creature.Items [item]}
 
-let CalcToHit creature =
-    match creature.RightHand with
-    | Weapon(properties = p) ->
-        if p.Finesse then max(StatToMod creature.Str, StatToMod creature.Dex) + ChalToProf creature.Level else
-        if p.Ranged then StatToMod creature.Dex + ChalToProf creature.Level else
-        StatToMod creature.Str + ChalToProf creature.Level
+let ClampTo y x  =
+    if x < y then x else y
 
+let CalcToHit creature =
+    let result : int = match creature.RightHand with
+                       | Weapon(properties = p) ->
+                        if p.Finesse then max(StatToMod creature.Str, StatToMod creature.Dex) + ChalToProf creature.Level else
+                        if p.Ranged then StatToMod creature.Dex + ChalToProf creature.Level else
+                        StatToMod creature.Str + ChalToProf creature.Level
+
+    log (sprintf "%s gets an extra %i to their chance to hit" creature.Details.Name result) |> ignore
+    result
+              
 let CalcAC creature =
-    match creature.Armor with
-    | Armor()
+    let result =
+        match creature.Armor with
+        | Armor(_, modifier, armorClass) ->
+            modifier + match armorClass with
+                       | ArmorClass.Light -> StatToMod creature.Dex
+                       | ArmorClass.Medium -> StatToMod creature.Dex |> ClampTo 2
+                       | ArmorClass.Heavy -> 0
+
+    log (sprintf "%s has an AC of %i" creature.Details.Name result) |> ignore      
+    result
+
+let Hits creature target =
+    CalcToHit creature + roll 20 > CalcAC target
+
+let CalcDamage creature =
+    let result =
+        match creature.RightHand with
+        | Weapon (dice = d) ->
+            roll d
+    log (sprintf "%s dealt %i" creature.Details.Name result) |> ignore
+    result
+
+let Attack creature target =
+    log (sprintf "%s attacking %s" creature.Details.Name target.Details.Name) |> ignore
+    if Hits creature target then CalcDamage creature else 0
+
+let RemoveHitpoints creature x =
+    let result = {creature with Hitpoints = creature.Hitpoints - x}
+    log (sprintf "%s now has %i hitpoints" creature.Details.Name result.Hitpoints) |> ignore
+    result
+
+// #region records
 
 let leatherArmor : Item =
     Armor ({ Name = "Leather Armor"; Description = "Stylish Leather Armor"; },
-           13)
+           13,
+           ArmorClass.Light )
+
+let chainMail : Item =
+    Armor ({ Name = "Chain Mail"; Description = "Scary Chain Mail"; },
+           16,
+           ArmorClass.Heavy )
+
+let noArmor : Item =
+    Armor ({ Name = "No Armor"; Description = "Butt naked"; },
+           0,
+           ArmorClass.Light )
 
 let scimitar : Item =
     Weapon ({ Name = "Scimitar"; Description = "A Scimitar"; },
-            { Sides = 6; },
+            6,
             { Finesse = true; Ranged = false; })
+
+let longsword : Item =
+    Weapon ({ Name = "Longsword"; Description = "A Longsword"; },
+            10,
+            { Finesse = false; Ranged = false; })
+
 
 let emptyHand : Item =
     Weapon ({ Name = "Empty Hand"; Description = "Bare fists"; },
-            { Sides = 1; },
+            1,
             { Finesse = false; Ranged = false; })
 
 let mutable goblin =
     {
         Details = { Name = "Goblin"; Description = "A mean looking goblin"};
         Str=8; Dex=14; Con=10; Int=10; Wis=10; Cha=9;
-        Items = []
+        Items = [];
+        Armor = noArmor;
+        Hitpoints = 7;
         RightHand = emptyHand;
         Level = 0.25;
     }
 
+let mutable hobGoblin =
+    {
+        Details = { Name = "Hobgoblin"; Description = "A really mean looking goblin"};
+        Str=13; Dex=12; Con=12; Int=10; Wis=10; Cha=9;
+        Items = [];
+        Armor = noArmor;
+        Hitpoints = 11;
+        RightHand = emptyHand;
+        Level = 0.5;
+    }
+
+// #endregion
+
 [<EntryPoint>]
 let main argv =
 
-    let goblin = Give scimitar goblin |> Equip scimitar
-    
+    goblin <- Give scimitar goblin 
+    |> Give leatherArmor 
+    |> EquipInRightHand scimitar 
+    |> EquipInArmor leatherArmor
+
+    hobGoblin <- Give longsword hobGoblin 
+    |> Give chainMail 
+    |> EquipInRightHand longsword 
+    |> EquipInArmor chainMail
+
+    hobGoblin <- Attack goblin hobGoblin
+    |> RemoveHitpoints hobGoblin
+
+    goblin <- Attack hobGoblin goblin
+    |> RemoveHitpoints goblin
+
+
+    for item in combatLog do
+        printfn "%s" item
+
     0
     

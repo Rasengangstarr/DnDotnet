@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "7opqZ6+fv2yfJRzsolRYJ220+JMkrVeSbCobm8sdcMxyy1+NaU8WtPJYdufoGPQofbJuh3ruvQPoFahH4wtSwA==",
+  "dgSpecHash": "QMyKUt/XCT+PijK7rP0T4BbmIkkAFxiZv1h17umycdtzBtdB8Wpr4fRnqgbNSisl+wgj5YL2uDIDpxqLDsiiAg==",
   "success": true,
-  "projectFilePath": "/home/dave/Documents/DnDotnet/DnDotnet.fsproj",
+  "projectFilePath": "/home/david/Documents/DnDotnet/DnDotnet/DnDotnet.fsproj",
   "expectedPackageFiles": [
-    "/home/dave/.nuget/packages/fsharp.core/5.0.0/fsharp.core.5.0.0.nupkg.sha512"
+    "/home/david/.nuget/packages/fsharp.core/5.0.0/fsharp.core.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }
