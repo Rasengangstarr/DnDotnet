@@ -23,7 +23,7 @@ let from whom =
     sprintf "from %s" whom
 
 let roll dice =
-    objrandom.Next(0,dice)
+    objrandom.Next(1,dice)
 
 let max (x,y) =
     if x > y then x else y
@@ -31,10 +31,11 @@ let max (x,y) =
 type Armor(ac) =
     member this.AC = ac
 
-type Weapon(damageDice, damageMod, isFinesse) =
+type Weapon(damageDice, damageMod, isFinesse, name) =
     member this.DamageDice : int = damageDice
     member this.DamageMod : int = damageMod
     member this.IsFinesse : bool = isFinesse
+    member this.Name : string = name
 
     member this.Damage = (roll this.DamageDice) + this.DamageMod
 
@@ -74,23 +75,30 @@ type Character(stats : StatVect, name, description, armor: Armor, weapon: Weapon
     member this.ChaMod = this.StatToMod this.Stats.Cha
 
     member this.Attack(target : Character) =
+         
         let weapon = this.Weapon
         let isFinesse = weapon.IsFinesse
+        printf "the %s is attacking the %s with a %s \n" this.Name target.Name this.Weapon.Name
+        printf "the %s needs %i to hit... \n" this.Name target.Armor.AC
         let toHit =
             if isFinesse 
-            then max(this.Stats.Str, this.Stats.Dex) + ChalToProf this.CR 
-            else this.Stats.Str + ChalToProf this.CR
-        if toHit + roll 20 > target.Armor.AC
-        then this.Weapon.Damage
-        else 0
+            then max(this.StrMod, this.DexMod) + ChalToProf this.CR 
+            else this.StrMod + ChalToProf this.CR
+
+        printf "the %s get plus %i to hit (%i from stats, %i from challenge level) \n" this.Name toHit (max(this.StrMod, this.DexMod)) (ChalToProf this.CR)
+        let hitroll = roll 20 
+        if toHit + hitroll > target.Armor.AC
+        then printf "he rolls %i, hitting and causing %i damage \n" hitroll this.Weapon.Damage
+        else printf "he rolls %i, he misses \n" hitroll
 
 [<EntryPoint>]
 let main argv =
-    let goblin = new Character(new StatVect(8,14,10,10,8,8), "goblin", "Small humanoid (goblinoid), Neutral Evil", new Armor(15), new Weapon(6,2,true), 0.25)
-    let hobgoblin = new Character(new StatVect(13,12,12,10,10,9), "hobgoblin", "Medium humanoid (goblinoid), Lawful Evil", new Armor(18), new Weapon(10,1,false), 0.5)
+    let goblin = new Character(new StatVect(8,14,10,10,8,8), "goblin", "Small humanoid (goblinoid), Neutral Evil", new Armor(15), new Weapon(6,2,true, "scimitar"), 0.25)
+    let hobgoblin = new Character(new StatVect(13,12,12,10,10,9), "hobgoblin", "Medium humanoid (goblinoid), Lawful Evil", new Armor(18), new Weapon(10,1,false, "long sword"), 0.5)
     
-    printfn "%i" (goblin.Attack hobgoblin)
-    let message = from "F#" // Call the function
-    printfn "Hello world %s" message
+    goblin.Attack hobgoblin
+    hobgoblin.Attack goblin
+    // let message = from "F#" // Call the function
+    // printfn "Hello world %s" message
     0 // return an integer exit code
     
