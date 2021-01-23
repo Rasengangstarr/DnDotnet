@@ -208,9 +208,28 @@ let main argv =
     goblin <- Attack hobGoblin goblin
     |> RemoveHitpoints goblin
 
+    let mutable Break = false
 
-    for item in combatLog do
-        printfn "%s" item
+    while not Break do
+        if goblin.Hitpoints > 0 then
+            hobGoblin <- Attack goblin hobGoblin
+            |> RemoveHitpoints hobGoblin
+        else
+            for item in combatLog do
+                printfn "%s" item
+            printf "the goblin is dead!"
+            Break <-true
+
+        if hobGoblin.Hitpoints > 0 then
+            goblin <- Attack hobGoblin goblin
+            |> RemoveHitpoints goblin
+        else 
+            for item in combatLog do
+                printfn "%s" item
+            printf "the hobgoblin is dead!"
+            Break <-true
+
+    
 
     0
     
